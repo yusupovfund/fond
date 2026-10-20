@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Переход…</title>
+<style>body{font:16px system-ui,sans-serif;background:#f6f1ea;color:#3b2f27;display:grid;place-items:center;height:100vh;margin:0}
+a{color:#c4602d}</style></head>
+<body><p id="m">Открываем сайт…</p>
+<script>
+fetch("url.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.json()).then(d => {
+  location.replace(d.url + (location.hash || "/"));
+}).catch(() => {
+  document.getElementById("m").innerHTML = "Сайт сейчас недоступен — компьютер с программой выключен или перезапускается. Попробуйте через пару минут.";
+});
+</script></body></html>
