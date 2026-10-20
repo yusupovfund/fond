@@ -8,6 +8,7 @@ a{color:#c4602d}</style></head>
 <body><p id="m">Открываем сайт…</p>
 <script>
 fetch("url.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.json()).then(d => {
+  if (!/^https:\/\/(?!api\.)[a-z0-9-]+\.trycloudflare\.com$/.test(d.url || "")) throw new Error("no url");
   location.replace(d.url + (location.hash || "/"));
 }).catch(() => {
   document.getElementById("m").innerHTML = "Сайт сейчас недоступен — компьютер с программой выключен или перезапускается. Попробуйте через пару минут.";
