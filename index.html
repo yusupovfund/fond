@@ -7,10 +7,20 @@
 a{color:#c4602d}</style></head>
 <body><p id="m">Открываем сайт…</p>
 <script>
+const m = document.getElementById("m");
+const down = () => { m.innerHTML = "Сайт сейчас недоступен — компьютер с программой выключен или нет интернета. Попробуйте через пару минут."; };
+// сайт работает за туннелем: при обрыве Wi-Fi он переподключается ~30 секунд — ждём до минуты, потом переходим
+async function go(d, tries) {
+  try {
+    const r = await fetch(d.url + "/health?t=" + Date.now(), { cache: "no-store" });
+    if (r.ok) return location.replace(d.url + (location.hash || "/"));
+  } catch (e) {}
+  if (tries <= 0) return down();
+  m.textContent = "Сайт переподключается, подождите…";
+  setTimeout(() => go(d, tries - 1), 5000);
+}
 fetch("url.json?t=" + Date.now(), { cache: "no-store" }).then(r => r.json()).then(d => {
   if (!/^https:\/\/(?!api\.)[a-z0-9-]+\.trycloudflare\.com$/.test(d.url || "")) throw new Error("no url");
-  location.replace(d.url + (location.hash || "/"));
-}).catch(() => {
-  document.getElementById("m").innerHTML = "Сайт сейчас недоступен — компьютер с программой выключен или перезапускается. Попробуйте через пару минут.";
-});
+  go(d, 12);
+}).catch(down);
 </script></body></html>
